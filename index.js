@@ -1,10 +1,13 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const cors = require('cors');
+
 dotenv.config();
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const uri = process.env.MONGODB_URI;
 const app = express();
-
+app.use(cors());
+app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
 
@@ -23,8 +26,16 @@ async function run() {
         await client.connect();
 
 
+        const db = client.db('idea-vault');
+        const newIdeaCollection = db.collection('new-idea');
 
-        
+        app.post('/new-idea', async (req,res)=>{
+            const newIdeaData = req.body;
+            console.log(newIdeaData)
+           const result = await newIdeaCollection.insertOne(newIdeaData)
+
+           res.json(result)
+        })
 
 
         // Send a ping to confirm a successful connection
@@ -39,10 +50,10 @@ run().catch(console.dir);
 
 
 app.get('/', (req, res) => {
-  res.send('Server is running');
+    res.send('Server is running');
 });
 
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
