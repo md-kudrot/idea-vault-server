@@ -3,7 +3,7 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 
 dotenv.config();
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = process.env.MONGODB_URI;
 const app = express();
 app.use(cors());
@@ -29,12 +29,27 @@ async function run() {
         const db = client.db('idea-vault');
         const newIdeaCollection = db.collection('new-idea');
 
+
+        app.get('/new-idea', async (req,res)=>{
+            const data = await newIdeaCollection.find();
+            const result = await data.toArray();
+            res.json(result)
+        })
+
         app.post('/new-idea', async (req,res)=>{
             const newIdeaData = req.body;
             console.log(newIdeaData)
            const result = await newIdeaCollection.insertOne(newIdeaData)
 
            res.json(result)
+        })
+
+
+        app.get('/new-idea/:id', async (req,res)=>{
+            const id = req.params.id;
+
+            const result = await newIdeaCollection.findOne({ _id: new ObjectId(id) });
+            res.json(result)
         })
 
 
