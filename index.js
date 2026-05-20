@@ -28,27 +28,42 @@ async function run() {
 
         const db = client.db('idea-vault');
         const newIdeaCollection = db.collection('new-idea');
+        const commentCollection = db.collection('comments');
 
 
-        app.get('/new-idea', async (req,res)=>{
+        app.get('/new-idea', async (req, res) => {
             const data = await newIdeaCollection.find();
             const result = await data.toArray();
             res.json(result)
         })
 
-        app.post('/new-idea', async (req,res)=>{
+        app.post('/new-idea', async (req, res) => {
             const newIdeaData = req.body;
             console.log(newIdeaData)
-           const result = await newIdeaCollection.insertOne(newIdeaData)
+            const result = await newIdeaCollection.insertOne(newIdeaData)
 
-           res.json(result)
+            res.json(result)
+        })
+
+        app.post('/comments', async (req, res) => {
+            const commentData = req.body;
+            console.log(commentData)
+            const result = await commentCollection.insertOne(commentData)
+
+            res.json(result)
         })
 
 
-        app.get('/new-idea/:id', async (req,res)=>{
+        app.get('/new-idea/:id', async (req, res) => {
             const id = req.params.id;
 
             const result = await newIdeaCollection.findOne({ _id: new ObjectId(id) });
+            res.json(result)
+        })
+        
+        app.get('/comments', async (req, res) => {
+            const data = await commentCollection.find();
+            const result = await data.toArray();
             res.json(result)
         })
 
