@@ -69,6 +69,14 @@ async function run() {
             res.json(result);
         });
 
+
+        app.delete('/delete-idea/:id', async (req, res) => {
+            const id = req.params.id;
+
+            const result = await newIdeaCollection.deleteOne({ _id: new ObjectId(id) });
+            res.json(result);
+        });
+
         app.get('/comments', async (req, res) => {
             const data = await commentCollection.find();
             const result = await data.toArray();
