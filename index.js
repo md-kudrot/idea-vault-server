@@ -31,11 +31,33 @@ async function run() {
         const commentCollection = db.collection('comments');
 
 
+        // app.get('/new-idea', async (req, res) => {
+        //     const data = await newIdeaCollection.find();
+        //     const result = await data.toArray();
+        //     res.json(result)
+        // })
+
+
         app.get('/new-idea', async (req, res) => {
-            const data = await newIdeaCollection.find();
+            const { search, category } = req.query;  
+
+            const query = {};
+
+            if (search) {
+                query.$or = [
+                    { startupName: { $regex: search, $options: 'i' } },
+                    { shortDescription: { $regex: search, $options: 'i' } }
+                ];
+            }
+
+            if (category) {
+                query.tags = { $regex: category, $options: 'i' }; 
+            }
+
+            const data = await newIdeaCollection.find(query);
             const result = await data.toArray();
-            res.json(result)
-        })
+            res.json(result);
+        });
 
         app.get("/new-idea/latest", async (req, res) => {
             const cursor = newIdeaCollection.find().limit(6);
