@@ -37,6 +37,12 @@ async function run() {
             res.json(result)
         })
 
+        app.get("/new-idea/latest", async (req, res) => {
+            const cursor = newIdeaCollection.find().limit(6);
+            const result = await cursor.toArray();
+            res.send(result);
+        });
+
         app.post('/new-idea', async (req, res) => {
             const newIdeaData = req.body;
             console.log(newIdeaData)
@@ -69,11 +75,25 @@ async function run() {
             res.json(result);
         });
 
+        app.patch('/update-comments/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedData = req.body;
+
+            const result = await commentCollection.updateOne({ _id: new ObjectId(id) }, { $set: updatedData });
+            res.json(result);
+        });
 
         app.delete('/delete-idea/:id', async (req, res) => {
             const id = req.params.id;
 
             const result = await newIdeaCollection.deleteOne({ _id: new ObjectId(id) });
+            res.json(result);
+        });
+
+        app.delete('/delete-comments/:id', async (req, res) => {
+            const id = req.params.id;
+
+            const result = await commentCollection.deleteOne({ _id: new ObjectId(id) });
             res.json(result);
         });
 
@@ -103,3 +123,4 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
