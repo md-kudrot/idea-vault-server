@@ -68,7 +68,7 @@ async function run() {
         // })
 
 
-        app.get('/new-idea', async (req, res) => {
+        app.get('/new-idea', verifyToken, async (req, res) => {
             const { search, category } = req.query;
 
             const query = {};
