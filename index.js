@@ -95,7 +95,7 @@ async function run() {
             res.send(result);
         });
 
-        app.post('/new-idea', async (req, res) => {
+        app.post('/new-idea', verifyToken, async (req, res) => {
             const newIdeaData = req.body;
             console.log(newIdeaData)
             const result = await newIdeaCollection.insertOne(newIdeaData)
@@ -103,7 +103,7 @@ async function run() {
             res.json(result)
         })
 
-        app.post('/comments', async (req, res) => {
+        app.post('/comments', verifyToken, async (req, res) => {
             const commentData = req.body;
             console.log(commentData)
             const result = await commentCollection.insertOne(commentData)
@@ -119,7 +119,7 @@ async function run() {
             res.json(result)
         })
 
-        app.patch('/update-idea/:id', async (req, res) => {
+        app.patch('/update-idea/:id', verifyToken, async (req, res) => {
             const id = req.params.id;
             const updatedData = req.body;
 
@@ -127,7 +127,7 @@ async function run() {
             res.json(result);
         });
 
-        app.patch('/update-comments/:id', async (req, res) => {
+        app.patch('/update-comments/:id',verifyToken, async (req, res) => {
             const id = req.params.id;
             const updatedData = req.body;
 
@@ -135,14 +135,14 @@ async function run() {
             res.json(result);
         });
 
-        app.delete('/delete-idea/:id', async (req, res) => {
+        app.delete('/delete-idea/:id',verifyToken, async (req, res) => {
             const id = req.params.id;
 
             const result = await newIdeaCollection.deleteOne({ _id: new ObjectId(id) });
             res.json(result);
         });
 
-        app.delete('/delete-comments/:id', async (req, res) => {
+        app.delete('/delete-comments/:id', verifyToken, async (req, res) => {
             const id = req.params.id;
 
             const result = await commentCollection.deleteOne({ _id: new ObjectId(id) });
