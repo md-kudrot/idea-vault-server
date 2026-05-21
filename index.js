@@ -149,7 +149,7 @@ async function run() {
             res.json(result);
         });
 
-        app.get('/comments', async (req, res) => {
+        app.get('/comments',verifyToken, async (req, res) => {
             const data = await commentCollection.find();
             const result = await data.toArray();
             res.json(result)
